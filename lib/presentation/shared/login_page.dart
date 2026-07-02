@@ -1,18 +1,974 @@
+// // // import 'package:flutter/material.dart';
+// // // import 'package:flutter/services.dart';
+// // // import 'package:flutter_bloc/flutter_bloc.dart';
+// // // import 'package:warehouse/presentation/admin/admin_dashboard_page.dart';
+// // // import 'package:warehouse/presentation/admin/admin_home_shell.dart';
+// // // import 'package:warehouse/presentation/bloc/admin/admin_dashboard/admin_dashboard_bloc.dart';
+// // // import 'package:warehouse/presentation/bloc/admin/admin_product/admin_product_bloc.dart';
+// // // import 'package:warehouse/presentation/bloc/admin/admin_request/admin_request_bloc.dart';
+// // // import 'package:warehouse/presentation/bloc/admin/admin_stock/admin_stock_bloc.dart';
+// // // import 'package:warehouse/presentation/bloc/admin/admin_warehouse/admin_warehouse_bloc.dart';
+// // // import 'package:warehouse/presentation/bloc/auth/auth_bloc.dart';
+// // // import 'package:warehouse/presentation/user/user_dashboard_page.dart';
+// // // import 'package:warehouse/presentation/user/user_main_page.dart';
+// // // import 'register_page.dart';
+
+// // // class LoginPage extends StatefulWidget {
+// // //   const LoginPage({super.key});
+
+// // //   @override
+// // //   State<LoginPage> createState() => _LoginPageState();
+// // // }
+
+// // // class _LoginPageState extends State<LoginPage>
+// // //     with SingleTickerProviderStateMixin {
+// // //   final _formKey = GlobalKey<FormState>();
+// // //   final _emailC = TextEditingController();
+// // //   final _passwordC = TextEditingController();
+// // //   bool _obscurePass = true;
+// // //   bool _hasNavigated = false; // guard double-navigate
+
+// // //   late AnimationController _animCtrl;
+// // //   late Animation<double> _fadeAnim;
+// // //   late Animation<Offset> _slideAnim;
+
+// // //   static const _primary = Color(0xFF0288D1);
+// // //   static const _primaryDark = Color(0xFF01579B);
+// // //   static const _primaryLight = Color(0xFF29B6F6);
+// // //   static const _bg = Color(0xFFF0F9FF);
+
+// // //   @override
+// // //   void initState() {
+// // //     super.initState();
+// // //     _animCtrl = AnimationController(
+// // //         vsync: this, duration: const Duration(milliseconds: 900));
+// // //     _fadeAnim = Tween<double>(begin: 0, end: 1)
+// // //         .animate(CurvedAnimation(parent: _animCtrl, curve: Curves.easeOut));
+// // //     _slideAnim = Tween<Offset>(begin: const Offset(0, 0.2), end: Offset.zero)
+// // //         .animate(CurvedAnimation(parent: _animCtrl, curve: Curves.easeOut));
+// // //     _animCtrl.forward();
+// // //   }
+
+// // //   @override
+// // //   void dispose() {
+// // //     _animCtrl.dispose();
+// // //     _emailC.dispose();
+// // //     _passwordC.dispose();
+// // //     super.dispose();
+// // //   }
+
+// // //   // void _submit() {
+// // //   //   if (!_formKey.currentState!.validate()) return;
+// // //   //   _hasNavigated = false; // reset setiap kali submit
+// // //   //   HapticFeedback.lightImpact();
+// // //   //   context.read<AuthBloc>().add(AuthEvent.login(
+// // //   //         email: _emailC.text.trim(),
+// // //   //         password: _passwordC.text,
+// // //   //       ));
+// // //   // }
+
+// // // void _submit() {
+// // //   if (!_formKey.currentState!.validate()) return;
+// // //   _hasNavigated = false;
+// // //   HapticFeedback.lightImpact();
+// // //   context.read<AuthBloc>().add(AuthEvent.login(
+// // //     email: _emailC.text.trim(),
+// // //     password: _passwordC.text,
+// // //   ));
+// // // }
+
+// // // void _navigateByRole(String role) {
+// // //     if (_hasNavigated) return;
+// // //     _hasNavigated = true;
+
+// // //     final isAdmin = role == 'admin' || role == 'super_admin';
+
+// // //     // ✅ Ambil sebelum Navigator
+// // //     final authBloc = context.read<AuthBloc>();
+
+// // //     Navigator.of(context).pushAndRemoveUntil(
+// // //       MaterialPageRoute(
+// // //         builder: (_) => isAdmin
+// // //             ? MultiBlocProvider(
+// // //                 providers: [
+// // //                   BlocProvider.value(value: authBloc), // ✅ teruskan
+// // //                   BlocProvider(create: (_) => AdminDashboardBloc()),
+// // //                   BlocProvider(create: (_) => AdminRequestBloc()),
+// // //                   BlocProvider(create: (_) => AdminStockBloc()),
+// // //                   BlocProvider(create: (_) => AdminWarehouseBloc()),
+// // //                   BlocProvider(create: (_) => AdminProductBloc()),
+// // //                 ],
+// // //                 child: const AdminHomeShell(),
+// // //               )
+// // //             : BlocProvider.value(
+// // //                 value: authBloc, // ✅ teruskan
+// // //                 child: const UserMainPage(),
+// // //               ),
+// // //       ),
+// // //       (_) => false,
+// // //     );
+// // //   }
+
+// // //   @override
+// // //   Widget build(BuildContext context) {
+// // //     final size = MediaQuery.of(context).size;
+
+// // //     return Scaffold(
+// // //       backgroundColor: _bg,
+// // //       body: BlocConsumer<AuthBloc, AuthState>(
+// // //         listener: (context, state) {
+// // //           state.maybeWhen(
+// // //             authenticated: (user) {
+// // //               debugPrint('>>> AUTHENTICATED user.role = "${user.role}"');
+// // //               _navigateByRole(user.role);
+// // //             },
+// // //             error: (msg) {
+// // //               _hasNavigated = false;
+// // //               ScaffoldMessenger.of(context).showSnackBar(
+// // //                 SnackBar(
+// // //                   content: Text(msg),
+// // //                   backgroundColor: Colors.red[700],
+// // //                   behavior: SnackBarBehavior.floating,
+// // //                   shape: RoundedRectangleBorder(
+// // //                       borderRadius: BorderRadius.circular(10)),
+// // //                 ),
+// // //               );
+// // //             },
+// // //             orElse: () {},
+// // //           );
+// // //         },
+// // //         builder: (context, state) {
+// // //           final isLoading =
+// // //               state.maybeWhen(loading: () => true, orElse: () => false);
+
+// // //           return Stack(
+// // //             children: [
+// // //               Container(
+// // //                 height: size.height * 0.38,
+// // //                 decoration: const BoxDecoration(
+// // //                   gradient: LinearGradient(
+// // //                     begin: Alignment.topLeft,
+// // //                     end: Alignment.bottomRight,
+// // //                     colors: [_primaryDark, _primary, _primaryLight],
+// // //                   ),
+// // //                   borderRadius: BorderRadius.only(
+// // //                     bottomLeft: Radius.circular(40),
+// // //                     bottomRight: Radius.circular(40),
+// // //                   ),
+// // //                 ),
+// // //               ),
+// // //               Positioned(
+// // //                 top: -50,
+// // //                 right: -50,
+// // //                 child: Container(
+// // //                   width: 200,
+// // //                   height: 200,
+// // //                   decoration: BoxDecoration(
+// // //                     shape: BoxShape.circle,
+// // //                     color: Colors.white.withOpacity(0.07),
+// // //                   ),
+// // //                 ),
+// // //               ),
+// // //               SafeArea(
+// // //                 child: FadeTransition(
+// // //                   opacity: _fadeAnim,
+// // //                   child: SlideTransition(
+// // //                     position: _slideAnim,
+// // //                     child: SingleChildScrollView(
+// // //                       padding: const EdgeInsets.only(bottom: 32),
+// // //                       child: Column(
+// // //                         children: [
+// // //                           const SizedBox(height: 32),
+// // //                           Column(
+// // //                             children: [
+// // //                               Container(
+// // //                                 width: 80,
+// // //                                 height: 80,
+// // //                                 decoration: BoxDecoration(
+// // //                                   color: Colors.white,
+// // //                                   shape: BoxShape.circle,
+// // //                                   boxShadow: [
+// // //                                     BoxShadow(
+// // //                                       color: Colors.black.withOpacity(0.15),
+// // //                                       blurRadius: 20,
+// // //                                       offset: const Offset(0, 8),
+// // //                                     ),
+// // //                                   ],
+// // //                                 ),
+// // //                                 child: const Icon(Icons.warehouse_rounded,
+// // //                                     size: 44, color: _primary),
+// // //                               ),
+// // //                               const SizedBox(height: 14),
+// // //                               const Text(
+// // //                                 'GudangPro',
+// // //                                 style: TextStyle(
+// // //                                   fontSize: 28,
+// // //                                   fontWeight: FontWeight.w800,
+// // //                                   color: Colors.white,
+// // //                                   letterSpacing: 1.2,
+// // //                                 ),
+// // //                               ),
+// // //                               const SizedBox(height: 4),
+// // //                               Text(
+// // //                                 'Sistem Manajemen Gudang',
+// // //                                 style: TextStyle(
+// // //                                   fontSize: 12,
+// // //                                   color: Colors.white.withOpacity(0.8),
+// // //                                 ),
+// // //                               ),
+// // //                             ],
+// // //                           ),
+// // //                           const SizedBox(height: 36),
+// // //                           Padding(
+// // //                             padding: const EdgeInsets.symmetric(horizontal: 24),
+// // //                             child: Container(
+// // //                               decoration: BoxDecoration(
+// // //                                 color: Colors.white,
+// // //                                 borderRadius: BorderRadius.circular(28),
+// // //                                 boxShadow: [
+// // //                                   BoxShadow(
+// // //                                     color: _primary.withOpacity(0.12),
+// // //                                     blurRadius: 40,
+// // //                                     offset: const Offset(0, 16),
+// // //                                   ),
+// // //                                 ],
+// // //                               ),
+// // //                               padding: const EdgeInsets.all(28),
+// // //                               child: Form(
+// // //                                 key: _formKey,
+// // //                                 child: Column(
+// // //                                   crossAxisAlignment: CrossAxisAlignment.start,
+// // //                                   children: [
+// // //                                     const Text('Selamat Datang',
+// // //                                         style: TextStyle(
+// // //                                           fontSize: 22,
+// // //                                           fontWeight: FontWeight.w800,
+// // //                                           color: _primaryDark,
+// // //                                         )),
+// // //                                     const SizedBox(height: 4),
+// // //                                     Text('Masuk ke akun GudangPro Anda',
+// // //                                         style: TextStyle(
+// // //                                             fontSize: 13,
+// // //                                             color: Colors.grey.shade500)),
+// // //                                     const SizedBox(height: 28),
+// // //                                     _buildTextField(
+// // //                                       controller: _emailC,
+// // //                                       label: 'Email',
+// // //                                       icon: Icons.email_outlined,
+// // //                                       keyboardType: TextInputType.emailAddress,
+// // //                                       validator: (v) {
+// // //                                         if (v == null || v.trim().isEmpty)
+// // //                                           return 'Email wajib diisi';
+// // //                                         if (!v.contains('@'))
+// // //                                           return 'Format email tidak valid';
+// // //                                         return null;
+// // //                                       },
+// // //                                     ),
+// // //                                     const SizedBox(height: 16),
+// // //                                     _buildTextField(
+// // //                                       controller: _passwordC,
+// // //                                       label: 'Password',
+// // //                                       icon: Icons.lock_outline,
+// // //                                       obscureText: _obscurePass,
+// // //                                       suffixIcon: IconButton(
+// // //                                         icon: Icon(_obscurePass
+// // //                                             ? Icons.visibility_off_outlined
+// // //                                             : Icons.visibility_outlined),
+// // //                                         onPressed: () => setState(
+// // //                                             () => _obscurePass = !_obscurePass),
+// // //                                       ),
+// // //                                       validator: (v) {
+// // //                                         if (v == null || v.isEmpty)
+// // //                                           return 'Password wajib diisi';
+// // //                                         return null;
+// // //                                       },
+// // //                                     ),
+// // //                                     const SizedBox(height: 28),
+// // //                                     SizedBox(
+// // //                                       width: double.infinity,
+// // //                                       height: 52,
+// // //                                       child: ElevatedButton(
+// // //                                         onPressed: isLoading ? null : _submit,
+// // //                                         style: ElevatedButton.styleFrom(
+// // //                                           backgroundColor: _primary,
+// // //                                           foregroundColor: Colors.white,
+// // //                                           shape: RoundedRectangleBorder(
+// // //                                               borderRadius:
+// // //                                                   BorderRadius.circular(16)),
+// // //                                           elevation: 0,
+// // //                                         ),
+// // //                                         child: isLoading
+// // //                                             ? const SizedBox(
+// // //                                                 width: 22,
+// // //                                                 height: 22,
+// // //                                                 child:
+// // //                                                     CircularProgressIndicator(
+// // //                                                         color: Colors.white,
+// // //                                                         strokeWidth: 2.5))
+// // //                                             : const Text('Masuk',
+// // //                                                 style: TextStyle(
+// // //                                                     fontSize: 16,
+// // //                                                     fontWeight:
+// // //                                                         FontWeight.w700)),
+// // //                                       ),
+// // //                                     ),
+// // //                                     const SizedBox(height: 20),
+// // //                                     Row(
+// // //                                       mainAxisAlignment:
+// // //                                           MainAxisAlignment.center,
+// // //                                       children: [
+// // //                                         Text('Belum punya akun? ',
+// // //                                             style: TextStyle(
+// // //                                                 color: Colors.grey.shade500)),
+// // //                                         GestureDetector(
+// // //                                           onTap: () => Navigator.push(
+// // //                                             context,
+// // //                                             MaterialPageRoute(
+// // //                                                 builder: (_) =>
+// // //                                                     const RegisterPage()),
+// // //                                           ),
+// // //                                           child: const Text('Daftar',
+// // //                                               style: TextStyle(
+// // //                                                   color: _primary,
+// // //                                                   fontWeight: FontWeight.w700)),
+// // //                                         ),
+// // //                                       ],
+// // //                                     ),
+// // //                                   ],
+// // //                                 ),
+// // //                               ),
+// // //                             ),
+// // //                           ),
+// // //                         ],
+// // //                       ),
+// // //                     ),
+// // //                   ),
+// // //                 ),
+// // //               ),
+// // //             ],
+// // //           );
+// // //         },
+// // //       ),
+// // //     );
+// // //   }
+
+// // //   Widget _buildTextField({
+// // //     required TextEditingController controller,
+// // //     required String label,
+// // //     required IconData icon,
+// // //     TextInputType keyboardType = TextInputType.text,
+// // //     bool obscureText = false,
+// // //     Widget? suffixIcon,
+// // //     String? Function(String?)? validator,
+// // //   }) {
+// // //     return TextFormField(
+// // //       controller: controller,
+// // //       keyboardType: keyboardType,
+// // //       obscureText: obscureText,
+// // //       validator: validator,
+// // //       decoration: InputDecoration(
+// // //         labelText: label,
+// // //         prefixIcon: Icon(icon, color: const Color(0xFF0288D1)),
+// // //         suffixIcon: suffixIcon,
+// // //         border: OutlineInputBorder(
+// // //           borderRadius: BorderRadius.circular(14),
+// // //           borderSide: BorderSide(color: Colors.grey.shade300),
+// // //         ),
+// // //         enabledBorder: OutlineInputBorder(
+// // //           borderRadius: BorderRadius.circular(14),
+// // //           borderSide: BorderSide(color: Colors.grey.shade300),
+// // //         ),
+// // //         focusedBorder: OutlineInputBorder(
+// // //           borderRadius: BorderRadius.circular(14),
+// // //           borderSide: const BorderSide(color: Color(0xFF0288D1), width: 1.5),
+// // //         ),
+// // //         errorBorder: OutlineInputBorder(
+// // //           borderRadius: BorderRadius.circular(14),
+// // //           borderSide: const BorderSide(color: Colors.red),
+// // //         ),
+// // //         filled: true,
+// // //         fillColor: Colors.grey.shade50,
+// // //         contentPadding:
+// // //             const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+// // //       ),
+// // //     );
+// // //   }
+// // // }
+
+// // import 'package:flutter/material.dart';
+// // import 'package:flutter/services.dart';
+// // import 'package:flutter_bloc/flutter_bloc.dart';
+// // import 'package:warehouse/presentation/admin/app_theme.dart';
+// // import 'package:warehouse/presentation/bloc/Auth/auth_bloc.dart';
+// // import 'register_page.dart';
+
+// // class LoginPage extends StatefulWidget {
+// //   const LoginPage({super.key});
+// //   @override
+// //   State<LoginPage> createState() => _LoginPageState();
+// // }
+
+// // class _LoginPageState extends State<LoginPage> with SingleTickerProviderStateMixin {
+// //   final _formKey     = GlobalKey<FormState>();
+// //   final _emailCtrl   = TextEditingController();
+// //   final _passCtrl    = TextEditingController();
+// //   bool  _obscure     = true;
+// //   bool  _remember    = false;
+// //   late AnimationController _animCtrl;
+// //   late Animation<double>   _fadeAnim;
+// //   late Animation<Offset>   _slideAnim;
+
+// //   @override
+// //   void initState() {
+// //     super.initState();
+// //     _animCtrl = AnimationController(vsync: this, duration: const Duration(milliseconds: 800));
+// //     _fadeAnim  = CurvedAnimation(parent: _animCtrl, curve: Curves.easeOut)
+// //         .drive(Tween(begin: 0.0, end: 1.0));
+// //     _slideAnim = CurvedAnimation(parent: _animCtrl, curve: Curves.easeOut)
+// //         .drive(Tween(begin: const Offset(0, .18), end: Offset.zero));
+// //     _animCtrl.forward();
+// //   }
+
+// //   @override
+// //   void dispose() { _animCtrl.dispose(); _emailCtrl.dispose(); _passCtrl.dispose(); super.dispose(); }
+
+// //   void _submit() {
+// //     if (!_formKey.currentState!.validate()) return;
+// //     HapticFeedback.lightImpact();
+// //     context.read<AuthBloc>().add(AuthEvent.login(
+// //       email: _emailCtrl.text.trim(), password: _passCtrl.text));
+// //   }
+
+// //   @override
+// //   Widget build(BuildContext context) {
+// //     final size = MediaQuery.of(context).size;
+// //     return Scaffold(
+// //       backgroundColor: AppColors.bg,
+// //       body: BlocConsumer<AuthBloc, AuthState>(
+// //         listener: (ctx, state) => state.maybeWhen(
+// //           error: (msg) => ScaffoldMessenger.of(ctx).showSnackBar(
+// //             SnackBar(content: Text(msg), backgroundColor: AppColors.danger,
+// //               behavior: SnackBarBehavior.floating,
+// //               shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)))),
+// //           orElse: () {},
+// //         ),
+// //         builder: (ctx, state) {
+// //           final loading = state.maybeWhen(loading: () => true, orElse: () => false);
+// //           return Stack(children: [
+// //             // Gradient header
+// //             Container(
+// //               height: size.height * .38,
+// //               decoration: const BoxDecoration(
+// //                 gradient: AppTheme.primaryGradient,
+// //                 borderRadius: BorderRadius.only(
+// //                   bottomLeft: Radius.circular(40), bottomRight: Radius.circular(40)),
+// //               ),
+// //             ),
+// //             Positioned(top: -60, right: -40,
+// //               child: Container(width: 200, height: 200,
+// //                 decoration: BoxDecoration(shape: BoxShape.circle,
+// //                   color: Colors.white.withOpacity(.06)))),
+// //             Positioned(top: 80, left: -30,
+// //               child: Container(width: 130, height: 130,
+// //                 decoration: BoxDecoration(shape: BoxShape.circle,
+// //                   color: Colors.white.withOpacity(.04)))),
+// //             SafeArea(
+// //               child: FadeTransition(opacity: _fadeAnim,
+// //                 child: SlideTransition(position: _slideAnim,
+// //                   child: SingleChildScrollView(
+// //                     padding: const EdgeInsets.only(bottom: 32),
+// //                     child: Column(children: [
+// //                       const SizedBox(height: 28),
+// //                       // ── Logo ────────────────────────────────────
+// //                       Column(children: [
+// //                         Container(
+// //                           width: 76, height: 76,
+// //                           decoration: BoxDecoration(color: Colors.white, shape: BoxShape.circle,
+// //                             boxShadow: [BoxShadow(color: Colors.black.withOpacity(.14),
+// //                               blurRadius: 18, offset: const Offset(0, 8))]),
+// //                           child: const Icon(Icons.warehouse_rounded, size: 42, color: AppColors.primary)),
+// //                         const SizedBox(height: 12),
+// //                         const Text('GudangPro', style: TextStyle(fontSize: 27,
+// //                           fontWeight: FontWeight.w800, color: Colors.white, letterSpacing: 1.1)),
+// //                         const SizedBox(height: 3),
+// //                         Text('Sistem Manajemen Gudang', style: TextStyle(
+// //                           fontSize: 12, color: Colors.white.withOpacity(.8))),
+// //                       ]),
+// //                       const SizedBox(height: 30),
+
+// //                       // ── Form card ────────────────────────────────
+// //                       Padding(
+// //                         padding: const EdgeInsets.symmetric(horizontal: 22),
+// //                         child: Container(
+// //                           decoration: BoxDecoration(
+// //                             color: Colors.white, borderRadius: BorderRadius.circular(24),
+// //                             boxShadow: [
+// //                               BoxShadow(color: AppColors.primary.withOpacity(.12),
+// //                                 blurRadius: 36, offset: const Offset(0, 14)),
+// //                               BoxShadow(color: Colors.black.withOpacity(.04),
+// //                                 blurRadius: 16, offset: const Offset(0, 4)),
+// //                             ]),
+// //                           padding: const EdgeInsets.all(24),
+// //                           child: Form(key: _formKey, child: Column(
+// //                             crossAxisAlignment: CrossAxisAlignment.start,
+// //                             children: [
+// //                               const Text('Selamat Datang', style: TextStyle(
+// //                                 fontSize: 22, fontWeight: FontWeight.w800, color: AppColors.text)),
+// //                               const SizedBox(height: 2),
+// //                               Text('Masuk ke akun GudangPro Anda',
+// //                                 style: TextStyle(fontSize: 12.5, color: Colors.grey.shade500)),
+// //                               const SizedBox(height: 22),
+
+// //                               // Email
+// //                               _buildField(ctrl: _emailCtrl, label: 'Email',
+// //                                 icon: Icons.email_outlined,
+// //                                 keyboardType: TextInputType.emailAddress,
+// //                                 validator: (v) {
+// //                                   if (v == null || v.trim().isEmpty) return 'Email wajib diisi';
+// //                                   if (!v.contains('@')) return 'Format email tidak valid';
+// //                                   return null;
+// //                                 }),
+// //                               const SizedBox(height: 14),
+
+// //                               // Password
+// //                               _buildField(ctrl: _passCtrl, label: 'Kata Sandi',
+// //                                 icon: Icons.lock_outline, obscure: _obscure,
+// //                                 suffix: IconButton(
+// //                                   icon: Icon(_obscure ? Icons.visibility_off_outlined
+// //                                       : Icons.visibility_outlined, size: 20,
+// //                                       color: Colors.grey.shade400),
+// //                                   onPressed: () => setState(() => _obscure = !_obscure)),
+// //                                 validator: (v) {
+// //                                   if (v == null || v.isEmpty) return 'Kata sandi wajib diisi';
+// //                                   return null;
+// //                                 }),
+// //                               const SizedBox(height: 10),
+
+// //                               // Remember me
+// //                               Row(children: [
+// //                                 SizedBox(width: 20, height: 20,
+// //                                   child: Checkbox(value: _remember, activeColor: AppColors.primary,
+// //                                     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(4)),
+// //                                     onChanged: (v) => setState(() => _remember = v!))),
+// //                                 const SizedBox(width: 8),
+// //                                 Text('Ingat Saya', style: TextStyle(
+// //                                   fontSize: 12.5, color: Colors.grey.shade600)),
+// //                                 const Spacer(),
+// //                                 GestureDetector(onTap: () {},
+// //                                   child: const Text('Lupa Kata Sandi?', style: TextStyle(
+// //                                     fontSize: 12.5, color: AppColors.primary,
+// //                                     fontWeight: FontWeight.w600))),
+// //                               ]),
+// //                               const SizedBox(height: 22),
+
+// //                               // Submit
+// //                               SizedBox(width: double.infinity, height: 50,
+// //                                 child: ElevatedButton(
+// //                                   onPressed: loading ? null : _submit,
+// //                                   child: loading
+// //                                       ? const SizedBox(width: 22, height: 22,
+// //                                           child: CircularProgressIndicator(
+// //                                             color: Colors.white, strokeWidth: 2.5))
+// //                                       : const Text('Masuk', style: TextStyle(
+// //                                           fontSize: 16, fontWeight: FontWeight.w700)))),
+// //                               const SizedBox(height: 16),
+
+// //                               // Register link
+// //                               Row(mainAxisAlignment: MainAxisAlignment.center, children: [
+// //                                 Text('Belum punya akun? ',
+// //                                   style: TextStyle(color: Colors.grey.shade500, fontSize: 13)),
+// //                                 GestureDetector(
+// //                                   onTap: () => Navigator.push(context,
+// //                                     MaterialPageRoute(builder: (_) => const RegisterPage())),
+// //                                   child: const Text('Daftar', style: TextStyle(
+// //                                     color: AppColors.primary, fontWeight: FontWeight.w700,
+// //                                     fontSize: 13))),
+// //                               ]),
+// //                             ],
+// //                           )),
+// //                         ),
+// //                       ),
+// //                     ]),
+// //                   ),
+// //                 ),
+// //               ),
+// //             ),
+// //           ]);
+// //         },
+// //       ),
+// //     );
+// //   }
+
+// //   Widget _buildField({
+// //     required TextEditingController ctrl,
+// //     required String label,
+// //     required IconData icon,
+// //     TextInputType keyboardType = TextInputType.text,
+// //     bool obscure = false,
+// //     Widget? suffix,
+// //     String? Function(String?)? validator,
+// //   }) {
+// //     return TextFormField(
+// //       controller: ctrl,
+// //       keyboardType: keyboardType,
+// //       obscureText: obscure,
+// //       validator: validator,
+// //       decoration: InputDecoration(
+// //         labelText: label,
+// //         prefixIcon: Icon(icon, color: AppColors.primary, size: 20),
+// //         suffixIcon: suffix,
+// //       ),
+// //     );
+// //   }
+// // }
+
+// import 'package:flutter/material.dart';
+// import 'package:flutter/services.dart';
+// import 'package:flutter_bloc/flutter_bloc.dart';
+// import 'package:warehouse/presentation/admin/app_theme.dart';
+// import 'package:warehouse/presentation/bloc/auth/auth_bloc.dart';
+// import 'register_page.dart';
+
+// class LoginPage extends StatefulWidget {
+//   const LoginPage({super.key});
+//   @override
+//   State<LoginPage> createState() => _LoginPageState();
+// }
+
+// class _LoginPageState extends State<LoginPage>
+//     with SingleTickerProviderStateMixin {
+//   final _formKey = GlobalKey<FormState>();
+//   final _emailCtrl = TextEditingController();
+//   final _passCtrl = TextEditingController();
+//   bool _obscure = true;
+//   bool _remember = false;
+//   bool _loading = false;
+
+//   late AnimationController _animCtrl;
+//   late Animation<double> _fadeAnim;
+//   late Animation<Offset> _slideAnim;
+
+//   @override
+//   void initState() {
+//     super.initState();
+//     _animCtrl = AnimationController(
+//         vsync: this, duration: const Duration(milliseconds: 800));
+//     _fadeAnim = CurvedAnimation(parent: _animCtrl, curve: Curves.easeOut)
+//         .drive(Tween(begin: 0.0, end: 1.0));
+//     _slideAnim = CurvedAnimation(parent: _animCtrl, curve: Curves.easeOut)
+//         .drive(Tween(begin: const Offset(0, .18), end: Offset.zero));
+//     _animCtrl.forward();
+
+//     WidgetsBinding.instance.addPostFrameCallback((_) {
+//       if (!mounted) return;
+//       context.read<AuthBloc>().stream.listen((state) {
+//         if (!mounted) return;
+//         state.maybeWhen(
+//           loading: () => setState(() => _loading = true),
+//           error: (msg) {
+//             setState(() => _loading = false);
+//             ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+//               content: Text(msg),
+//               backgroundColor: AppColors.danger,
+//               behavior: SnackBarBehavior.floating,
+//               shape: RoundedRectangleBorder(
+//                   borderRadius: BorderRadius.circular(10)),
+//             ));
+//           },
+//           orElse: () => setState(() => _loading = false),
+//         );
+//       });
+//     });
+//   }
+
+//   @override
+//   void dispose() {
+//     _animCtrl.dispose();
+//     _emailCtrl.dispose();
+//     _passCtrl.dispose();
+//     super.dispose();
+//   }
+
+//   void _submit() {
+//     if (!_formKey.currentState!.validate()) return;
+//     HapticFeedback.lightImpact();
+//     context.read<AuthBloc>().add(AuthEvent.login(
+//           email: _emailCtrl.text.trim(),
+//           password: _passCtrl.text,
+//         ));
+//   }
+
+//   @override
+//   Widget build(BuildContext context) {
+//     final size = MediaQuery.of(context).size;
+//     return Scaffold(
+//       backgroundColor: AppColors.bg,
+//       body: Stack(children: [
+//         Container(
+//           height: size.height * .38,
+//           decoration: const BoxDecoration(
+//             gradient: AppTheme.primaryGradient,
+//             borderRadius: BorderRadius.only(
+//               bottomLeft: Radius.circular(40),
+//               bottomRight: Radius.circular(40),
+//             ),
+//           ),
+//         ),
+//         Positioned(
+//           top: -60,
+//           right: -40,
+//           child: Container(
+//             width: 200,
+//             height: 200,
+//             decoration: BoxDecoration(
+//               shape: BoxShape.circle,
+//               color: Colors.white.withOpacity(.06),
+//             ),
+//           ),
+//         ),
+//         Positioned(
+//           top: 80,
+//           left: -30,
+//           child: Container(
+//             width: 130,
+//             height: 130,
+//             decoration: BoxDecoration(
+//               shape: BoxShape.circle,
+//               color: Colors.white.withOpacity(.04),
+//             ),
+//           ),
+//         ),
+//         SafeArea(
+//           child: FadeTransition(
+//             opacity: _fadeAnim,
+//             child: SlideTransition(
+//               position: _slideAnim,
+//               child: SingleChildScrollView(
+//                 padding: const EdgeInsets.only(bottom: 32),
+//                 child: Column(children: [
+//                   const SizedBox(height: 28),
+//                   Column(children: [
+//                     Container(
+//                       width: 76,
+//                       height: 76,
+//                       decoration: BoxDecoration(
+//                         color: Colors.white,
+//                         shape: BoxShape.circle,
+//                         boxShadow: [
+//                           BoxShadow(
+//                             color: Colors.black.withOpacity(.14),
+//                             blurRadius: 18,
+//                             offset: const Offset(0, 8),
+//                           ),
+//                         ],
+//                       ),
+//                       child: const Icon(Icons.warehouse_rounded,
+//                           size: 42, color: AppColors.primary),
+//                     ),
+//                     const SizedBox(height: 12),
+//                     const Text('GudangPro',
+//                         style: TextStyle(
+//                             fontSize: 27,
+//                             fontWeight: FontWeight.w800,
+//                             color: Colors.white,
+//                             letterSpacing: 1.1)),
+//                     const SizedBox(height: 3),
+//                     Text('Sistem Manajemen Gudang',
+//                         style: TextStyle(
+//                             fontSize: 12, color: Colors.white.withOpacity(.8))),
+//                   ]),
+//                   const SizedBox(height: 30),
+//                   Padding(
+//                     padding: const EdgeInsets.symmetric(horizontal: 22),
+//                     child: Container(
+//                       decoration: BoxDecoration(
+//                         color: Colors.white,
+//                         borderRadius: BorderRadius.circular(24),
+//                         boxShadow: [
+//                           BoxShadow(
+//                             color: AppColors.primary.withOpacity(.12),
+//                             blurRadius: 36,
+//                             offset: const Offset(0, 14),
+//                           ),
+//                           BoxShadow(
+//                             color: Colors.black.withOpacity(.04),
+//                             blurRadius: 16,
+//                             offset: const Offset(0, 4),
+//                           ),
+//                         ],
+//                       ),
+//                       padding: const EdgeInsets.all(24),
+//                       child: Form(
+//                         key: _formKey,
+//                         child: Column(
+//                           crossAxisAlignment: CrossAxisAlignment.start,
+//                           children: [
+//                             const Text('Selamat Datang',
+//                                 style: TextStyle(
+//                                     fontSize: 22,
+//                                     fontWeight: FontWeight.w800,
+//                                     color: AppColors.text)),
+//                             const SizedBox(height: 2),
+//                             Text('Masuk ke akun GudangPro Anda',
+//                                 style: TextStyle(
+//                                     fontSize: 12.5,
+//                                     color: Colors.grey.shade500)),
+//                             const SizedBox(height: 22),
+//                             _buildField(
+//                               ctrl: _emailCtrl,
+//                               label: 'Email',
+//                               icon: Icons.email_outlined,
+//                               keyboardType: TextInputType.emailAddress,
+//                               validator: (v) {
+//                                 if (v == null || v.trim().isEmpty)
+//                                   return 'Email wajib diisi';
+//                                 if (!v.contains('@'))
+//                                   return 'Format email tidak valid';
+//                                 return null;
+//                               },
+//                             ),
+//                             const SizedBox(height: 14),
+//                             _buildField(
+//                               ctrl: _passCtrl,
+//                               label: 'Kata Sandi',
+//                               icon: Icons.lock_outline,
+//                               obscure: _obscure,
+//                               suffix: IconButton(
+//                                 icon: Icon(
+//                                   _obscure
+//                                       ? Icons.visibility_off_outlined
+//                                       : Icons.visibility_outlined,
+//                                   size: 20,
+//                                   color: Colors.grey.shade400,
+//                                 ),
+//                                 onPressed: () =>
+//                                     setState(() => _obscure = !_obscure),
+//                               ),
+//                               validator: (v) {
+//                                 if (v == null || v.isEmpty)
+//                                   return 'Kata sandi wajib diisi';
+//                                 return null;
+//                               },
+//                             ),
+//                             const SizedBox(height: 10),
+//                             Row(children: [
+//                               SizedBox(
+//                                 width: 20,
+//                                 height: 20,
+//                                 child: Checkbox(
+//                                   value: _remember,
+//                                   activeColor: AppColors.primary,
+//                                   shape: RoundedRectangleBorder(
+//                                       borderRadius:
+//                                           BorderRadius.circular(4)),
+//                                   onChanged: (v) =>
+//                                       setState(() => _remember = v!),
+//                                 ),
+//                               ),
+//                               const SizedBox(width: 8),
+//                               Text('Ingat Saya',
+//                                   style: TextStyle(
+//                                       fontSize: 12.5,
+//                                       color: Colors.grey.shade600)),
+//                               const Spacer(),
+//                               GestureDetector(
+//                                 onTap: () {},
+//                                 child: const Text('Lupa Kata Sandi?',
+//                                     style: TextStyle(
+//                                         fontSize: 12.5,
+//                                         color: AppColors.primary,
+//                                         fontWeight: FontWeight.w600)),
+//                               ),
+//                             ]),
+//                             const SizedBox(height: 22),
+//                             SizedBox(
+//                               width: double.infinity,
+//                               height: 50,
+//                               child: ElevatedButton(
+//                                 onPressed: _loading ? null : _submit,
+//                                 child: _loading
+//                                     ? const SizedBox(
+//                                         width: 22,
+//                                         height: 22,
+//                                         child: CircularProgressIndicator(
+//                                             color: Colors.white,
+//                                             strokeWidth: 2.5))
+//                                     : const Text('Masuk',
+//                                         style: TextStyle(
+//                                             fontSize: 16,
+//                                             fontWeight: FontWeight.w700)),
+//                               ),
+//                             ),
+//                             const SizedBox(height: 16),
+//                             Row(
+//                               mainAxisAlignment: MainAxisAlignment.center,
+//                               children: [
+//                                 Text('Belum punya akun? ',
+//                                     style: TextStyle(
+//                                         color: Colors.grey.shade500,
+//                                         fontSize: 13)),
+//                                 GestureDetector(
+//                                   onTap: () => Navigator.push(
+//                                     context,
+//                                     MaterialPageRoute(
+//                                         builder: (_) => const RegisterPage()),
+//                                   ),
+//                                   child: const Text('Daftar',
+//                                       style: TextStyle(
+//                                           color: AppColors.primary,
+//                                           fontWeight: FontWeight.w700,
+//                                           fontSize: 13)),
+//                                 ),
+//                               ],
+//                             ),
+//                           ],
+//                         ),
+//                       ),
+//                     ),
+//                   ),
+//                 ]),
+//               ),
+//             ),
+//           ),
+//         ),
+//       ]),
+//     );
+//   }
+
+//   Widget _buildField({
+//     required TextEditingController ctrl,
+//     required String label,
+//     required IconData icon,
+//     TextInputType keyboardType = TextInputType.text,
+//     bool obscure = false,
+//     Widget? suffix,
+//     String? Function(String?)? validator,
+//   }) {
+//     return TextFormField(
+//       controller: ctrl,
+//       keyboardType: keyboardType,
+//       obscureText: obscure,
+//       validator: validator,
+//       decoration: InputDecoration(
+//         labelText: label,
+//         prefixIcon: Icon(icon, color: AppColors.primary, size: 20),
+//         suffixIcon: suffix,
+//       ),
+//     );
+//   }
+// }
+
+
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:warehouse/presentation/admin/pages/screen/dashboard_pages.dart' hide DashboardScreen;
-import 'package:warehouse/presentation/user/pages/dashboard_pages.dart';
-import '../../main.dart';
-// Admin imports
-import '../admin/pages/data/mock_data.dart';
-import '../admin/pages/data/models/models.dart';
-import '../admin/pages/screen/home_pages.dart';
-// User import
-
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:warehouse/presentation/admin/app_theme.dart';
+import 'package:warehouse/presentation/bloc/auth/auth_bloc.dart';
+import 'register_page.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
-
   @override
   State<LoginPage> createState() => _LoginPageState();
 }
@@ -20,667 +976,342 @@ class LoginPage extends StatefulWidget {
 class _LoginPageState extends State<LoginPage>
     with SingleTickerProviderStateMixin {
   final _formKey = GlobalKey<FormState>();
-  final _emailController = TextEditingController();
-  final _passwordController = TextEditingController();
+  final _emailCtrl = TextEditingController();
+  final _passCtrl = TextEditingController();
+  bool _obscure = true;
+  bool _remember = false;
 
-  bool _isPasswordVisible = false;
-  bool _isLoading = false;
-  bool _rememberMe = false;
-
-  late AnimationController _animController;
+  late AnimationController _animCtrl;
   late Animation<double> _fadeAnim;
   late Animation<Offset> _slideAnim;
-
-  static const _primary = Color(0xFF0288D1);
-  static const _primaryDark = Color(0xFF0277BD);
-  static const _primaryLight = Color(0xFF29B6F6);
-  static const _background = Color(0xFFF0F9FF);
-
-  /// Tentukan role berdasarkan email
-  AppRole _detectRole(String email) {
-    final trimmed = email.trim().toLowerCase();
-    if (trimmed == 'super@warehouse.id') return AppRole.superAdmin;
-    if (trimmed == 'admin@warehouse.id') return AppRole.admin;
-    return AppRole.user;
-  }
 
   @override
   void initState() {
     super.initState();
-    _animController = AnimationController(
-      vsync: this,
-      duration: const Duration(milliseconds: 900),
-    );
-    _fadeAnim = Tween<double>(begin: 0.0, end: 1.0).animate(
-      CurvedAnimation(parent: _animController, curve: Curves.easeOut),
-    );
-    _slideAnim = Tween<Offset>(
-      begin: const Offset(0, 0.2),
-      end: Offset.zero,
-    ).animate(
-      CurvedAnimation(parent: _animController, curve: Curves.easeOut),
-    );
-    _animController.forward();
+    _animCtrl = AnimationController(
+        vsync: this, duration: const Duration(milliseconds: 800));
+    _fadeAnim = CurvedAnimation(parent: _animCtrl, curve: Curves.easeOut)
+        .drive(Tween(begin: 0.0, end: 1.0));
+    _slideAnim = CurvedAnimation(parent: _animCtrl, curve: Curves.easeOut)
+        .drive(Tween(begin: const Offset(0, .18), end: Offset.zero));
+    _animCtrl.forward();
+    // ✅ Tidak ada stream.listen manual — cukup BlocConsumer di build()
   }
 
   @override
   void dispose() {
-    _animController.dispose();
-    _emailController.dispose();
-    _passwordController.dispose();
+    _animCtrl.dispose();
+    _emailCtrl.dispose();
+    _passCtrl.dispose();
     super.dispose();
   }
 
-  Future<void> _handleLogin() async {
+  void _submit() {
     if (!_formKey.currentState!.validate()) return;
     HapticFeedback.lightImpact();
-    setState(() => _isLoading = true);
-    await Future.delayed(const Duration(milliseconds: 1200));
-    if (!mounted) return;
-    setState(() => _isLoading = false);
-
-    final role = _detectRole(_emailController.text);
-
-    if (role == AppRole.user) {
-      Navigator.of(context).pushAndRemoveUntil(
-        _fadeRoute(const DashboardScreen()),
-        (route) => false,
-      );
-    } else {
-      final users = MockDB.instance.users;
-      AppUser user;
-      if (role == AppRole.superAdmin) {
-        user = users.firstWhere(
-          (u) => u.role == UserRole.superAdmin,
-          orElse: () => users.first,
-        );
-      } else {
-        user = users.firstWhere(
-          (u) =>
-              u.role == UserRole.admin &&
-              u.email == _emailController.text.trim(),
-          orElse: () =>
-              users.firstWhere((u) => u.role == UserRole.admin,
-                  orElse: () => users.first),
-        );
-      }
-      Navigator.of(context).pushAndRemoveUntil(
-        _fadeRoute(HomeShell(currentUser: user)),
-        (route) => false,
-      );
-    }
+    context.read<AuthBloc>().add(AuthEvent.login(
+          email: _emailCtrl.text.trim(),
+          password: _passCtrl.text,
+        ));
   }
-
-  static PageRoute _fadeRoute(Widget page) => PageRouteBuilder(
-        pageBuilder: (_, a, __) => FadeTransition(opacity: a, child: page),
-        transitionDuration: const Duration(milliseconds: 400),
-      );
 
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
 
     return Scaffold(
-      backgroundColor: _background,
-      body: Stack(
-        children: [
-          Container(
-            height: size.height * 0.38,
-            decoration: const BoxDecoration(
-              gradient: LinearGradient(
-                begin: Alignment.topLeft,
-                end: Alignment.bottomRight,
-                colors: [_primaryDark, _primary, _primaryLight],
-              ),
-              borderRadius: BorderRadius.only(
-                bottomLeft: Radius.circular(40),
-                bottomRight: Radius.circular(40),
+      backgroundColor: AppColors.bg,
+      // ✅ BlocConsumer: listener untuk navigasi, builder untuk UI
+      body: BlocConsumer<AuthBloc, AuthState>(
+        listener: (context, state) {
+          state.maybeWhen(
+            error: (msg) {
+              ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                content: Text(msg),
+                backgroundColor: AppColors.danger,
+                behavior: SnackBarBehavior.floating,
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(10)),
+              ));
+            },
+            orElse: () {},
+          );
+        },
+        builder: (context, state) {
+          // ✅ Loading dari BlocBuilder, bukan state lokal
+          final isLoading = state.maybeWhen(
+            loading: () => true,
+            orElse: () => false,
+          );
+
+          return Stack(children: [
+            Container(
+              height: size.height * .38,
+              decoration: const BoxDecoration(
+                gradient: AppTheme.primaryGradient,
+                borderRadius: BorderRadius.only(
+                  bottomLeft: Radius.circular(40),
+                  bottomRight: Radius.circular(40),
+                ),
               ),
             ),
-          ),
-          Positioned(
-            top: -50,
-            right: -50,
-            child: Container(
-              width: 200,
-              height: 200,
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                color: Colors.white.withOpacity(0.07),
+            Positioned(
+              top: -60,
+              right: -40,
+              child: Container(
+                width: 200,
+                height: 200,
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  color: Colors.white.withOpacity(.06),
+                ),
               ),
             ),
-          ),
-          Positioned(
-            top: 60,
-            left: -30,
-            child: Container(
-              width: 120,
-              height: 120,
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                color: Colors.white.withOpacity(0.05),
+            Positioned(
+              top: 80,
+              left: -30,
+              child: Container(
+                width: 130,
+                height: 130,
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  color: Colors.white.withOpacity(.04),
+                ),
               ),
             ),
-          ),
-
-          SafeArea(
-            child: FadeTransition(
-              opacity: _fadeAnim,
-              child: SlideTransition(
-                position: _slideAnim,
-                child: SingleChildScrollView(
-                  padding: const EdgeInsets.only(bottom: 32),
-                  child: Column(
-                    children: [
-                      const SizedBox(height: 24),
-
-                      _buildHeader(),
-
+            SafeArea(
+              child: FadeTransition(
+                opacity: _fadeAnim,
+                child: SlideTransition(
+                  position: _slideAnim,
+                  child: SingleChildScrollView(
+                    padding: const EdgeInsets.only(bottom: 32),
+                    child: Column(children: [
                       const SizedBox(height: 28),
+                      // Logo
+                      Column(children: [
+                        Container(
+                          width: 76,
+                          height: 76,
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            shape: BoxShape.circle,
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.black.withOpacity(.14),
+                                blurRadius: 18,
+                                offset: const Offset(0, 8),
+                              ),
+                            ],
+                          ),
+                          child: const Icon(Icons.warehouse_rounded,
+                              size: 42, color: AppColors.primary),
+                        ),
+                        const SizedBox(height: 12),
+                        const Text('GudangPro',
+                            style: TextStyle(
+                                fontSize: 27,
+                                fontWeight: FontWeight.w800,
+                                color: Colors.white,
+                                letterSpacing: 1.1)),
+                        const SizedBox(height: 3),
+                        Text('Sistem Manajemen Gudang',
+                            style: TextStyle(
+                                fontSize: 12,
+                                color: Colors.white.withOpacity(.8))),
+                      ]),
+                      const SizedBox(height: 30),
 
+                      // Form card
                       Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 24),
+                        padding: const EdgeInsets.symmetric(horizontal: 22),
                         child: Container(
                           decoration: BoxDecoration(
                             color: Colors.white,
-                            borderRadius: BorderRadius.circular(28),
+                            borderRadius: BorderRadius.circular(24),
                             boxShadow: [
                               BoxShadow(
-                                color: _primary.withOpacity(0.12),
-                                blurRadius: 40,
-                                offset: const Offset(0, 16),
+                                color: AppColors.primary.withOpacity(.12),
+                                blurRadius: 36,
+                                offset: const Offset(0, 14),
                               ),
                               BoxShadow(
-                                color: Colors.black.withOpacity(0.05),
-                                blurRadius: 20,
+                                color: Colors.black.withOpacity(.04),
+                                blurRadius: 16,
                                 offset: const Offset(0, 4),
                               ),
                             ],
                           ),
-                          padding: const EdgeInsets.all(28),
+                          padding: const EdgeInsets.all(24),
                           child: Form(
                             key: _formKey,
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                const Text(
-                                  'Selamat Datang',
-                                  style: TextStyle(
-                                    fontSize: 24,
-                                    fontWeight: FontWeight.w800,
-                                    color: Color(0xFF01579B),
-                                    letterSpacing: 0.3,
-                                  ),
-                                ),
-                                const SizedBox(height: 4),
-                                Text(
-                                  'Masuk ke akun GudangPro Anda',
-                                  style: TextStyle(
-                                    fontSize: 13,
-                                    color: Colors.grey.shade500,
-                                  ),
-                                ),
-                                const SizedBox(height: 28),
+                                const Text('Selamat Datang',
+                                    style: TextStyle(
+                                        fontSize: 22,
+                                        fontWeight: FontWeight.w800,
+                                        color: AppColors.text)),
+                                const SizedBox(height: 2),
+                                Text('Masuk ke akun GudangPro Anda',
+                                    style: TextStyle(
+                                        fontSize: 12.5,
+                                        color: Colors.grey.shade500)),
+                                const SizedBox(height: 22),
 
-                                _buildInputLabel('Email / Username'),
-                                const SizedBox(height: 8),
-                                _buildTextField(
-                                  controller: _emailController,
-                                  hint: 'contoh@email.com',
+                                // Email
+                                _buildField(
+                                  ctrl: _emailCtrl,
+                                  label: 'Email',
                                   icon: Icons.email_outlined,
                                   keyboardType: TextInputType.emailAddress,
-                                  validator: (val) {
-                                    if (val == null || val.isEmpty) {
-                                      return 'Email tidak boleh kosong';
-                                    }
+                                  validator: (v) {
+                                    if (v == null || v.trim().isEmpty)
+                                      return 'Email wajib diisi';
+                                    if (!v.contains('@'))
+                                      return 'Format email tidak valid';
                                     return null;
                                   },
                                 ),
-                                const SizedBox(height: 20),
+                                const SizedBox(height: 14),
 
-                                _buildInputLabel('Kata Sandi'),
-                                const SizedBox(height: 8),
-                                TextFormField(
-                                  controller: _passwordController,
-                                  obscureText: !_isPasswordVisible,
-                                  style: const TextStyle(
-                                      fontSize: 15, color: Color(0xFF1A237E)),
-                                  decoration: InputDecoration(
-                                    hintText: '••••••••',
-                                    hintStyle: TextStyle(
+                                // Password
+                                _buildField(
+                                  ctrl: _passCtrl,
+                                  label: 'Kata Sandi',
+                                  icon: Icons.lock_outline,
+                                  obscure: _obscure,
+                                  suffix: IconButton(
+                                    icon: Icon(
+                                      _obscure
+                                          ? Icons.visibility_off_outlined
+                                          : Icons.visibility_outlined,
+                                      size: 20,
                                       color: Colors.grey.shade400,
-                                      letterSpacing: 3,
                                     ),
-                                    prefixIcon: Icon(Icons.lock_outline,
-                                        color: _primary, size: 20),
-                                    suffixIcon: IconButton(
-                                      onPressed: () => setState(() =>
-                                          _isPasswordVisible =
-                                              !_isPasswordVisible),
-                                      icon: Icon(
-                                        _isPasswordVisible
-                                            ? Icons.visibility
-                                            : Icons.visibility_off_outlined,
-                                        color: Colors.grey.shade400,
-                                        size: 20,
-                                      ),
-                                    ),
-                                    filled: true,
-                                    fillColor: _background,
-                                    border: OutlineInputBorder(
-                                      borderRadius: BorderRadius.circular(14),
-                                      borderSide: BorderSide.none,
-                                    ),
-                                    enabledBorder: OutlineInputBorder(
-                                      borderRadius: BorderRadius.circular(14),
-                                      borderSide: BorderSide(
-                                        color: _primaryLight.withOpacity(0.2),
-                                        width: 1.5,
-                                      ),
-                                    ),
-                                    focusedBorder: OutlineInputBorder(
-                                      borderRadius: BorderRadius.circular(14),
-                                      borderSide: const BorderSide(
-                                          color: _primary, width: 2),
-                                    ),
-                                    errorBorder: OutlineInputBorder(
-                                      borderRadius: BorderRadius.circular(14),
-                                      borderSide: const BorderSide(
-                                          color: Color(0xFFFF5252),
-                                          width: 1.5),
-                                    ),
-                                    focusedErrorBorder: OutlineInputBorder(
-                                      borderRadius: BorderRadius.circular(14),
-                                      borderSide: const BorderSide(
-                                          color: Color(0xFFFF5252), width: 2),
-                                    ),
-                                    contentPadding:
-                                        const EdgeInsets.symmetric(
-                                            horizontal: 16, vertical: 16),
+                                    onPressed: () =>
+                                        setState(() => _obscure = !_obscure),
                                   ),
-                                  validator: (val) {
-                                    if (val == null || val.isEmpty) {
-                                      return 'Kata sandi tidak boleh kosong';
-                                    }
-                                    if (val.length < 4) {
-                                      return 'Minimal 4 karakter';
-                                    }
+                                  validator: (v) {
+                                    if (v == null || v.isEmpty)
+                                      return 'Kata sandi wajib diisi';
                                     return null;
                                   },
                                 ),
-                                const SizedBox(height: 16),
+                                const SizedBox(height: 10),
 
-                                Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    Row(
-                                      children: [
-                                        SizedBox(
-                                          width: 22,
-                                          height: 22,
-                                          child: Checkbox(
-                                            value: _rememberMe,
-                                            onChanged: (val) => setState(
-                                                () => _rememberMe = val!),
-                                            activeColor: _primary,
-                                            shape: RoundedRectangleBorder(
-                                              borderRadius:
-                                                  BorderRadius.circular(4),
-                                            ),
-                                            side: BorderSide(
-                                                color: Colors.grey.shade400,
-                                                width: 1.5),
-                                          ),
-                                        ),
-                                        const SizedBox(width: 8),
-                                        Text(
-                                          'Ingat Saya',
-                                          style: TextStyle(
-                                            fontSize: 13,
-                                            color: Colors.grey.shade600,
-                                          ),
-                                        ),
-                                      ],
+                                // Remember me
+                                Row(children: [
+                                  SizedBox(
+                                    width: 20,
+                                    height: 20,
+                                    child: Checkbox(
+                                      value: _remember,
+                                      activeColor: AppColors.primary,
+                                      shape: RoundedRectangleBorder(
+                                          borderRadius:
+                                              BorderRadius.circular(4)),
+                                      onChanged: (v) =>
+                                          setState(() => _remember = v!),
                                     ),
-                                    GestureDetector(
-                                      onTap: () {},
-                                      child: const Text(
-                                        'Lupa Kata Sandi?',
+                                  ),
+                                  const SizedBox(width: 8),
+                                  Text('Ingat Saya',
+                                      style: TextStyle(
+                                          fontSize: 12.5,
+                                          color: Colors.grey.shade600)),
+                                  const Spacer(),
+                                  GestureDetector(
+                                    onTap: () {},
+                                    child: const Text('Lupa Kata Sandi?',
                                         style: TextStyle(
-                                          fontSize: 13,
-                                          color: _primary,
-                                          fontWeight: FontWeight.w600,
-                                        ),
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                                const SizedBox(height: 28),
+                                            fontSize: 12.5,
+                                            color: AppColors.primary,
+                                            fontWeight: FontWeight.w600)),
+                                  ),
+                                ]),
+                                const SizedBox(height: 22),
 
+                                // Submit button
                                 SizedBox(
                                   width: double.infinity,
-                                  height: 54,
+                                  height: 50,
                                   child: ElevatedButton(
-                                    onPressed:
-                                        _isLoading ? null : _handleLogin,
-                                    style: ElevatedButton.styleFrom(
-                                      backgroundColor: _primary,
-                                      foregroundColor: Colors.white,
-                                      disabledBackgroundColor:
-                                          _primary.withOpacity(0.6),
-                                      elevation: 0,
-                                      shape: RoundedRectangleBorder(
-                                        borderRadius:
-                                            BorderRadius.circular(16),
-                                      ),
-                                    ).copyWith(
-                                      elevation:
-                                          WidgetStateProperty.resolveWith(
-                                        (states) => states
-                                                .contains(WidgetState.pressed)
-                                            ? 2
-                                            : 8,
-                                      ),
-                                    ),
-                                    child: _isLoading
+                                    onPressed: isLoading ? null : _submit,
+                                    child: isLoading
                                         ? const SizedBox(
                                             width: 22,
                                             height: 22,
                                             child: CircularProgressIndicator(
-                                              color: Colors.white,
-                                              strokeWidth: 2.5,
-                                            ),
-                                          )
-                                        : const Row(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.center,
-                                            children: [
-                                              Icon(Icons.login_rounded,
-                                                  size: 20),
-                                              SizedBox(width: 10),
-                                              Text(
-                                                'Masuk',
-                                                style: TextStyle(
-                                                  fontSize: 16,
-                                                  fontWeight: FontWeight.w700,
-                                                  letterSpacing: 0.5,
-                                                ),
-                                              ),
-                                            ],
-                                          ),
-                                  ),
-                                ),
-                                const SizedBox(height: 20),
-
-                                Row(
-                                  children: [
-                                    Expanded(
-                                      child: Divider(
-                                          color: Colors.grey.shade200,
-                                          thickness: 1.5),
-                                    ),
-                                    Padding(
-                                      padding: const EdgeInsets.symmetric(
-                                          horizontal: 12),
-                                      child: Text(
-                                        'atau',
-                                        style: TextStyle(
-                                          fontSize: 12,
-                                          color: Colors.grey.shade400,
-                                        ),
-                                      ),
-                                    ),
-                                    Expanded(
-                                      child: Divider(
-                                          color: Colors.grey.shade200,
-                                          thickness: 1.5),
-                                    ),
-                                  ],
-                                ),
-                                const SizedBox(height: 20),
-
-                                Center(
-                                  child: GestureDetector(
-                                    onTap: () => Navigator.pushNamed(
-                                      context,
-                                      '/register',
-                                      arguments: AppRole.user,
-                                    ),
-                                    child: RichText(
-                                      text: TextSpan(
-                                        text: 'Belum punya akun? ',
-                                        style: TextStyle(
-                                          fontSize: 14,
-                                          color: Colors.grey.shade500,
-                                        ),
-                                        children: const [
-                                          TextSpan(
-                                            text: 'Daftar Sekarang',
+                                                color: Colors.white,
+                                                strokeWidth: 2.5))
+                                        : const Text('Masuk',
                                             style: TextStyle(
-                                              color: _primary,
-                                              fontWeight: FontWeight.w700,
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                    ),
+                                                fontSize: 16,
+                                                fontWeight: FontWeight.w700)),
                                   ),
                                 ),
-
                                 const SizedBox(height: 16),
 
-                                // Demo credentials hint
-                                Container(
-                                  padding: const EdgeInsets.all(12),
-                                  decoration: BoxDecoration(
-                                    color: _primary.withOpacity(0.06),
-                                    borderRadius: BorderRadius.circular(12),
-                                    border: Border.all(
-                                      color: _primary.withOpacity(0.15),
-                                      width: 1,
-                                    ),
-                                  ),
-                                  child: Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      Row(
-                                        children: [
-                                          Icon(Icons.info_outline_rounded,
-                                              size: 14, color: _primary),
-                                          const SizedBox(width: 6),
-                                          const Text(
-                                            'Akun Demo',
-                                            style: TextStyle(
-                                              fontSize: 12,
-                                              fontWeight: FontWeight.w700,
-                                              color: _primary,
-                                            ),
-                                          ),
-                                        ],
+                                // Register link
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Text('Belum punya akun? ',
+                                        style: TextStyle(
+                                            color: Colors.grey.shade500,
+                                            fontSize: 13)),
+                                    GestureDetector(
+                                      onTap: () => Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                            builder: (_) =>
+                                                const RegisterPage()),
                                       ),
-                                      const SizedBox(height: 6),
-                                      _demoHint(Icons.person_rounded,
-                                          'User', 'user@warehouse.id'),
-                                      _demoHint(Icons.manage_accounts_rounded,
-                                          'Admin', 'admin@warehouse.id'),
-                                      _demoHint(Icons.shield_rounded,
-                                          'Super Admin',
-                                          'super@warehouse.id'),
-                                    ],
-                                  ),
+                                      child: const Text('Daftar',
+                                          style: TextStyle(
+                                              color: AppColors.primary,
+                                              fontWeight: FontWeight.w700,
+                                              fontSize: 13)),
+                                    ),
+                                  ],
                                 ),
                               ],
                             ),
                           ),
                         ),
                       ),
-                    ],
+                    ]),
                   ),
                 ),
               ),
             ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _demoHint(IconData icon, String role, String email) {
-    return Padding(
-      padding: const EdgeInsets.only(top: 4),
-      child: GestureDetector(
-        onTap: () {
-          setState(() {
-            _emailController.text = email;
-            _passwordController.text = 'password';
-          });
+          ]);
         },
-        child: Row(
-          children: [
-            Icon(icon, size: 12, color: Colors.grey.shade500),
-            const SizedBox(width: 6),
-            Text(
-              '$role: ',
-              style: TextStyle(
-                fontSize: 11,
-                color: Colors.grey.shade500,
-                fontWeight: FontWeight.w600,
-              ),
-            ),
-            Text(
-              email,
-              style: TextStyle(
-                fontSize: 11,
-                color: Colors.grey.shade500,
-              ),
-            ),
-            const Spacer(),
-            Text(
-              'Isi otomatis',
-              style: TextStyle(
-                fontSize: 10,
-                color: _primary.withOpacity(0.7),
-                fontWeight: FontWeight.w500,
-              ),
-            ),
-          ],
-        ),
       ),
     );
   }
 
-  Widget _buildHeader() {
-    return Column(
-      children: [
-        Container(
-          width: 80,
-          height: 80,
-          decoration: BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.circular(22),
-            boxShadow: [
-              BoxShadow(
-                color: Colors.black.withOpacity(0.2),
-                blurRadius: 20,
-                offset: const Offset(0, 8),
-              ),
-            ],
-          ),
-          child: const Icon(
-            Icons.warehouse_rounded,
-            size: 44,
-            color: _primary,
-          ),
-        ),
-        const SizedBox(height: 16),
-        const Text(
-          'GudangPro',
-          style: TextStyle(
-            fontSize: 28,
-            fontWeight: FontWeight.w800,
-            color: Colors.white,
-            letterSpacing: 1,
-          ),
-        ),
-        const SizedBox(height: 4),
-        Text(
-          'Sistem Manajemen Gudang Terintegrasi',
-          style: TextStyle(
-            fontSize: 13,
-            color: Colors.white.withOpacity(0.85),
-          ),
-        ),
-      ],
-    );
-  }
-
-  Widget _buildInputLabel(String label) {
-    return Text(
-      label,
-      style: const TextStyle(
-        fontSize: 13,
-        fontWeight: FontWeight.w600,
-        color: Color(0xFF01579B),
-        letterSpacing: 0.3,
-      ),
-    );
-  }
-
-  Widget _buildTextField({
-    required TextEditingController controller,
-    required String hint,
+  Widget _buildField({
+    required TextEditingController ctrl,
+    required String label,
     required IconData icon,
     TextInputType keyboardType = TextInputType.text,
+    bool obscure = false,
+    Widget? suffix,
     String? Function(String?)? validator,
   }) {
     return TextFormField(
-      controller: controller,
+      controller: ctrl,
       keyboardType: keyboardType,
-      style: const TextStyle(fontSize: 15, color: Color(0xFF1A237E)),
-      decoration: InputDecoration(
-        hintText: hint,
-        hintStyle: TextStyle(
-          color: Colors.grey.shade400,
-          fontSize: 14,
-        ),
-        prefixIcon: Icon(icon, color: _primary, size: 20),
-        filled: true,
-        fillColor: _background,
-        border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(14),
-          borderSide: BorderSide.none,
-        ),
-        enabledBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(14),
-          borderSide: BorderSide(
-            color: _primaryLight.withOpacity(0.2),
-            width: 1.5,
-          ),
-        ),
-        focusedBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(14),
-          borderSide: const BorderSide(color: _primary, width: 2),
-        ),
-        errorBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(14),
-          borderSide: const BorderSide(
-            color: Color(0xFFFF5252),
-            width: 1.5,
-          ),
-        ),
-        focusedErrorBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(14),
-          borderSide: const BorderSide(
-            color: Color(0xFFFF5252),
-            width: 2,
-          ),
-        ),
-        contentPadding:
-            const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
-      ),
+      obscureText: obscure,
       validator: validator,
+      decoration: InputDecoration(
+        labelText: label,
+        prefixIcon: Icon(icon, color: AppColors.primary, size: 20),
+        suffixIcon: suffix,
+      ),
     );
   }
 }
